@@ -2,8 +2,9 @@ from multiprocessing import AuthenticationError
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.tokens import RefreshToken
+from .models import Profile, User
+from django.contrib.auth.password_validation import validate_password
 
-User = get_user_model
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -20,37 +21,40 @@ class UserSerializer(serializers.ModelSerializer):
         )
 
 
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        fields = ['bio', 'phone', 'profile_image']
 
 
 
 class RegisterSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True)
+    password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
+    password2 = serializers.CharField(write_only=True, required=True)
 
     class Meta:
         model = User
         fields = (
-            'id',
             'username',
-            'email',
             'password',
-            'first_name',
-            'last_name',
-            'role',
-            'date_of_birth',
-            'profile_photo'
+            'password2',
+            'email',
         )
     
     def create(self, validated_data):
         # Hash the password
-        user = User.objects.create_user(
+        user = User.objects.create(
             username=validated_data['username'],
             email=validated_data['email'],
-            password=validated_data['password'],
-            first_name=validated_data['first_name'],
-            last_name=validated_data['last_name'],
-            role=validated_data['role'],
         )
+        user.set_password(validated_data['password'])
+        user.save()
         return user
+    
+    def validate(self, attrs):
+        if attrs['password'] != attrs['password2']:
+            raise serializers.ValidationError({"password": "Password fields didn't match."})
+        return attrs
     
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField(max_length=255)
