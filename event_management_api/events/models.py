@@ -1,8 +1,15 @@
 from django.db import models
 from users.models import User
 
+class EventCategory(models.Model):
+    name = models.CharField(max_length=255, unique=True)
+    description = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return self.name
+
 class Event(models.Model):
-    name = models.CharField(max_length=255)
+    title = models.CharField(max_length=255)
     description = models.TextField()
     location = models.CharField(max_length=255)
     date = models.DateField()
@@ -10,7 +17,7 @@ class Event(models.Model):
     end_time = models.DateTimeField()
     organizer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='events')
     is_canceled = models.BooleanField(default=False)
-    category = models.CharField(max_length=50)
+    category = models.ForeignKey(EventCategory, on_delete=models.SET_NULL, null=True, related_name='events')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

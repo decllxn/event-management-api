@@ -1,7 +1,14 @@
 from rest_framework import serializers
-from .models import Event, Registration
+from .models import Event, EventCategory, Registration
+
+class EventCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EventCategory
+        fields = ('id', 'name', 'description')
 
 class EventSerializer(serializers.ModelSerializer):
+    category = EventCategorySerializer()
+
     class Meta:
         model = Event
         fields = '__all__'
