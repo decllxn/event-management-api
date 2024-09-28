@@ -22,4 +22,7 @@ urlpatterns = [
 
     # Tickets
     path('tickets/', include('tickets.urls')),
+
+    # Payments
+    path('payments/', include('payments.urls')),
 ]
