@@ -14,5 +14,12 @@ urlpatterns = [
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
+    # Events
     path('events/', include('events.urls')),
+
+    # Notification
+    path('notifications/', include('notifications.urls')),
+
+    # Tickets
+    path('tickets/', include('tickets.urls')),
 ]

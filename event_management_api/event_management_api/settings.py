@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'tickets',
     'payments',
     'feedback',
+    'notifications',
 ]
 
 
