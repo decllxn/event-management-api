@@ -2,6 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from .models import Payment, DiscountCode, Refund
+from .serializers import PaymentSerializer, DiscountCodeSerializer, RefundSerializer
 from events.models import Event
 import stripe
 import paypalrestsdk
@@ -69,10 +70,14 @@ class PaymentView(APIView):
             return Response({"error": "Invalid payment method"}, status=status.HTTP_400_BAD_REQUEST)
 
         if payment_status == 'completed':
-            Payment.objects.create(user=user, event=event, amount=amount, payment_method=payment_method, payment_status=payment_status)
-            return Response({"success": "Payment successful"}, status=status.HTTP_201_CREATED)
+            payment = Payment.objects.create(user=user, event=event, amount=amount, payment_method=payment_method, payment_status=payment_status)
+            
+            # Serialize the payment data
+            serializer = PaymentSerializer(payment)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response({"error": "Payment failed"}, status=status.HTTP_400_BAD_REQUEST)
+
 
 class ApplyDiscountView(APIView):
     def post(self, request):
@@ -86,7 +91,14 @@ class ApplyDiscountView(APIView):
         discounted_amount = discount_code.apply_discount(amount)
         discount_code.used_count += 1
         discount_code.save()
-        return Response({"discounted_amount": discounted_amount}, status=status.HTTP_200_OK)
+
+        # Serialize the discount code data
+        discount_serializer = DiscountCodeSerializer(discount_code)
+        return Response({
+            "discounted_amount": discounted_amount,
+            "discount_code": discount_serializer.data
+        }, status=status.HTTP_200_OK)
+
 
 class RefundRequestView(APIView):
     def post(self, request, payment_id):
@@ -94,5 +106,8 @@ class RefundRequestView(APIView):
         refund_amount = payment.amount  # Full refund for now
         refund_status = 'requested'
 
-        Refund.objects.create(payment=payment, amount=refund_amount, refund_status=refund_status)
-        return Response({"success": "Refund requested"}, status=status.HTTP_201_CREATED)
+        refund = Refund.objects.create(payment=payment, amount=refund_amount, refund_status=refund_status)
+
+        # Serialize the refund data
+        refund_serializer = RefundSerializer(refund)
+        return Response(refund_serializer.data, status=status.HTTP_201_CREATED)
