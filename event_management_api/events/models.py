@@ -24,6 +24,13 @@ class Event(models.Model):
     def __str__(self):
         return self.name
     
+    @property
+    def average_rating(self):
+        feedbacks = self.feedbacks.all()
+        if feedbacks.exists():
+            return round(feedbacks.aggregate(models.Avg('rating'))['rating__avg'], 2)
+        return None
+    
 class Registration(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='registrations')
     user = models.ForeignKey(User, on_delete=models.CASCADE)

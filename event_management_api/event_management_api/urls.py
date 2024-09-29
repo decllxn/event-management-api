@@ -25,4 +25,7 @@ urlpatterns = [
 
     # Payments
     path('payments/', include('payments.urls')),
+
+    # Feedback
+    path('feedback/', include('feedback.urls')),
 ]
