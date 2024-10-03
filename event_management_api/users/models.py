@@ -25,8 +25,12 @@ class Profile(models.Model):
     bio = models.TextField(max_length=500, blank=True)
     phone = models.CharField(max_length=15, blank=True)
 
-
+@receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
         Profile.objects.create(user=instance)
+
+@receiver(post_save, sender=User)
+def save_user_profile(sender, instance, **kwargs):
+    instance.profile.save()
 

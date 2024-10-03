@@ -1,6 +1,5 @@
-from multiprocessing import AuthenticationError
 from rest_framework import serializers
-from django.contrib.auth import get_user_model
+from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
 from .models import Profile, User
 from django.contrib.auth.password_validation import validate_password
@@ -64,7 +63,7 @@ class LoginSerializer(serializers.Serializer):
         username = data.get('username', None)
         password = data.get('password', None)
 
-        user = AuthenticationError(username=username, password=password)
+        user = authenticate(username=username, password=password)
         if user is None:
             raise serializers.ValidationError('Invalid username or password')
         
