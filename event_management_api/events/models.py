@@ -13,11 +13,9 @@ class Event(models.Model):
     description = models.TextField()
     location = models.CharField(max_length=255)
     date = models.DateField()
-    start_time = models.DateTimeField()
-    end_time = models.DateTimeField()
     organizer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='events')
     is_canceled = models.BooleanField(default=False)
-    category = models.ForeignKey(EventCategory, on_delete=models.SET_NULL, null=True, related_name='events')
+    category = models.ForeignKey(EventCategory, on_delete=models.SET_NULL, null=True, related_name='events', blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

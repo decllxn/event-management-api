@@ -28,7 +28,7 @@ class EventCreateView(generics.CreateAPIView):
     permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+        serializer.save(organizer=self.request.user)
 
 
 # Allowing Users to view a list of events
@@ -63,7 +63,7 @@ class EventRegisterView(generics.CreateAPIView):
 
 class IsCreator(BasePermission):
     def has_object_permission(self, request, view, obj):
-        return obj.user == request.user
+        return obj.organizer == request.user
     
 
 # Event Update

@@ -7,7 +7,7 @@ class EventCategorySerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'description')
 
 class EventSerializer(serializers.ModelSerializer):
-    category = EventCategorySerializer()
+    category = serializers.PrimaryKeyRelatedField(queryset=EventCategory.objects.all())
 
     class Meta:
         model = Event
