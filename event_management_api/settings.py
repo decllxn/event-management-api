@@ -21,7 +21,7 @@ SECRET_KEY = 'django-insecure-g@bdnb3bpxdbv509c3d5l_s(^ox5u_y9=6l8ni&egp(c5yfmjv
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['event_management_api.herokuapp.com', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['event-management-api100-8400de380dcd.herokuapp.com', 'localhost', '127.0.0.1']
 
 
 # Application definition
@@ -179,3 +179,9 @@ ACCOUNT_EMAIL_REQUIRED = True
 
 PAYPAL_CLIENT_ID = 'your_paypal_client_id'
 PAYPAL_SECRET = 'your_paypal_secret'
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://event-management-api100-8400de380dcd.herokuapp.com'
+]
+
+CORS_ALLOW_ALL_ORIGINS = True
